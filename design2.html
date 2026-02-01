@@ -56,7 +56,7 @@ button:active{transform:scale(0.98);}
 <body>
 
 <div class="container">
-  <h2>No Boat No Vote</h2>
+  <h2>Dhaner Shishe vote din Noakhali-5</h2>
 
   <canvas id="canvas" width="1080" height="1080"></canvas>
 
@@ -83,7 +83,7 @@ const FRAME_W = 1080;
 const FRAME_H = 1080;
 
 const frame = new Image();
-frame.src = "design.png";
+frame.src = "design2.png";
 
 let userImg = null;
 let zoom = 1;
@@ -146,7 +146,7 @@ function downloadImage(){
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "NoBoatNoVote.jpg";
+    a.download = "DhanerShisheVoteDinNoakhali-5.jpg";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -157,4 +157,5 @@ function downloadImage(){
 
 </body>
 </html>
+
 
