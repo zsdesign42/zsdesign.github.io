@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhaner Shishe vote din – Photo Generator</title>
+
+<style>
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  padding:16px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:#f1f3f6;
+}
+.container{
+  max-width:420px;
+  margin:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+h2{
+  text-align:center;
+  margin:6px 0 12px;
+}
+canvas{
+  width:100%;
+  border-radius:14px;
+}
+label{
+  font-size:14px;
+  display:block;
+  margin-top:10px;
+}
+input[type=file],
+input[type=range]{
+  width:100%;
+}
+button{
+  width:100%;
+  margin-top:16px;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:#0aa05b;
+  color:#fff;
+  cursor:pointer;
+}
+button:active{transform:scale(0.98);}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Dhaner Shishe vote din</h2>
+
+  <canvas id="canvas" width="1080" height="1080"></canvas>
+
+  <label>আপনার ছবি সিলেক্ট করুন</label>
+  <input type="file" id="upload" accept="image/*">
+
+  <label>জুম ইন / আউট</label>
+  <input type="range" id="zoom" min="0.5" max="3" step="0.01" value="1">
+
+  <label>ডানে – বামে সরান</label>
+  <input type="range" id="moveX" min="-500" max="500" value="0">
+
+  <label>উপরে – নিচে সরান</label>
+  <input type="range" id="moveY" min="-500" max="500" value="0">
+
+  <button onclick="downloadImage()">⬇️ ছবি ডাউনলোড করুন</button>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const FRAME_W = 1080;
+const FRAME_H = 1080;
+
+const frame = new Image();
+frame.src = "design1.png";
+
+let userImg = null;
+let zoom = 1;
+let offsetX = 0;
+let offsetY = 0;
+
+// Draw function (safe for all browsers)
+function draw(){
+  ctx.clearRect(0,0,FRAME_W,FRAME_H);
+
+  if(userImg){
+    const w = FRAME_W * zoom;
+    const h = FRAME_H * zoom;
+    ctx.drawImage(
+      userImg,
+      (FRAME_W - w)/2 + offsetX,
+      (FRAME_H - h)/2 + offsetY,
+      w,
+      h
+    );
+  }
+
+  ctx.drawImage(frame,0,0,FRAME_W,FRAME_H);
+}
+
+// Show frame immediately
+frame.onload = draw;
+
+// Upload image
+document.getElementById("upload").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+
+  userImg = new Image();
+  userImg.onload = draw;
+  userImg.src = URL.createObjectURL(file);
+});
+
+// Controls
+document.getElementById("zoom").oninput = e=>{
+  zoom = parseFloat(e.target.value);
+  draw();
+};
+document.getElementById("moveX").oninput = e=>{
+  offsetX = parseInt(e.target.value);
+  draw();
+};
+document.getElementById("moveY").oninput = e=>{
+  offsetY = parseInt(e.target.value);
+  draw();
+};
+
+// UNIVERSAL DOWNLOAD (iOS safe)
+function downloadImage(){
+  canvas.toBlob(function(blob){
+    if(!blob){
+      alert("Download failed. Please try again.");
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "DhanerShisheVoteDin.jpg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, "image/jpeg", 0.95);
+}
+</script>
+
+</body>
+</html>
+
+
